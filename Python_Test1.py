@@ -84,16 +84,23 @@ import matplotlib.pylab as plt
 # print(y)
 
 ## 계단 함수의 그래프를 구현해보자 -5.0에서 5.0까지 0.1 간격의 넘파이 배열을 생성
+## 책에선 def step_function(x): return np.array(x > 0, dtype=np.int) 로 구현했지만,
+## dtype=np.int를 생략해도 잘 작동한다 
+## 이유가 뭘까? -> dtype=np.int를 생략하면 np.array()가 자동으로 dtype을 int64로 지정하기 때문이다
+## int64는 64비트 정수형을 뜻한다
+## 코파일럿 고마워,, 감동이야,,,구글링이 필요가 없네,,,
 
-def step_function(x):
-    return np.array(x > 0)
+# def step_function(x):
+#     return np.array(x > 0)
 
-x = np.arange(-5.0, 5.0, 0.1)
-y = step_function(x)
-plt.plot(x,y)
-plt.ylim(-0.1, 1.1) # y축의 범위 지정
-plt.show()
+# x = np.arange(-5.0, 5.0, 0.1)
+# y = step_function(x)
+# plt.plot(x,y)
+# plt.ylim(-0.1, 1.1) # y축의 범위 지정
+# plt.show()
 
+
+## 시그모이드 함수 구현하기
 
 
 
