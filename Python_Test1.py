@@ -66,12 +66,33 @@ import matplotlib.pylab as plt
 #         return 0
     
 ## 넘파이 배열도 지원하도록 수정
+# def step_function(x):
+#     y = x > 0
+#     return y.astype(np.int) # astype() : 넘파이 배열의 자료형을 변환한다
+
+# x = np.array([-1.0, 1.0, 2.0])
+# # print(x)
+
+# y = x > 0
+# print(y)
+
+## 넘파이 배열의 자료형을 변환할 때는 astype() 메서드를 이용한다
+## 원하는 자료형을 변환할 때 astype(np.int)처럼 np.int를 인수로 지정한다
+## (np.변환하고 싶은 인수)
+
+# y = y.astype(np.int)
+# print(y)
+
+## 계단 함수의 그래프를 구현해보자 -5.0에서 5.0까지 0.1 간격의 넘파이 배열을 생성
+
 def step_function(x):
-    y = x > 0
-    return y.astype(np.int) # astype() : 넘파이 배열의 자료형을 변환한다
+    return np.array(x > 0)
 
-
-
+x = np.arange(-5.0, 5.0, 0.1)
+y = step_function(x)
+plt.plot(x,y)
+plt.ylim(-0.1, 1.1) # y축의 범위 지정
+plt.show()
 
 
 
