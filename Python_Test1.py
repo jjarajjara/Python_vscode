@@ -100,7 +100,113 @@ import matplotlib.pylab as plt
 # plt.show()
 
 
-## 시그모이드 함수 구현하기
+## 시그모이드 함수 구현하기 
+## 시그모이드 함수란 'S자 모양'이라는 뜻을 가진다
+
+## 넘파이 배열이어도 올바른 결과가 나온다
+## 시그모이드 함수 그래프 그리기
+# def sigmaoid(x):
+#     return 1 / (1 + np.exp(-x))    
+ 
+# x = np.arange(-5.0, 5.0, 0.1)
+# y = sigmaoid(x)
+# plt.plot(x,y)
+# plt.ylim(-0.1, 1.1) ## y축의 범위 지정
+# plt.show()
+    # x = np.array([-1.0, 1.0, 2.0])
+    # sigmaoid(x)
+
+    # t = np.array([1.0, 2.0, 3.0])
+    # 1.0 + t 
+    # 1.0 / t
 
 
+## 계단 함수와 시그모이드 함수 공통점 
+## = 비선형 함수 
 
+## sigmoid 함수와 계단 함수 동시에 그리기 성공 !!
+# def sigmoid(x):
+#     return 1 / (1 + np.exp(-x))
+
+# def step_function(x):
+#     return np.array(x > 0)
+
+# x = np.arange(-5.0, 5.0, 0.1)
+# y1 = step_function(x)
+# y2 = sigmoid(x)
+# plt.plot(x,y1)
+# plt.plot(x,y2, 'k--') ## k-- : 검은색 점선
+# plt.ylim(-0.1, 1.1)
+# plt.show()
+
+## ReLU 함수 
+## 입력이 0을 넘으면 그 입력을 그대로 출력하고, 0 이하이면 0을 출력하는 함수
+
+# def relu(x):
+#     return np.maximum(0,x) ## maximum() : 두 입력 중 큰 값을 선택해 반환하는 함수
+
+## 책에선 주로 ReLU 함수를 사용한다고 한다
+
+## 다차원 배열
+
+# A = np.array([1,2,3,4])
+# print(A)
+# print(np.ndim(A)) ## np.ndim() 함수 : 배열의 차원 수를 반환하는 함수
+# print(A.shape) ## 배열의 형상을 반환하는 함수
+# print(A.shape[0])
+
+## shape() 함수는 튜플을 반환한다
+## 배열의 형상이란 각 차원의 요소 수를 튜플로 표시한 것
+## 튜플은 (1,2)처럼 괄호로 둘러싸인 '쉼표로 구분된 값'의 나열이다
+### 다차원 배열인 경우 ) 배열의 갯수, 배열 안의 원소 갯수 
+### 1차원 배열인 경우 ) 배열 안의 원소 갯수, (공백)
+
+
+# B = np.array([[1,2], [3,4], [5,6]])
+# print(B)
+# print(np.ndim(B))
+# print(B.shape)
+
+
+## 지긋지긋한 행렬의 곱 
+# A = np.array([[1,2], [3,4]])
+# print(A.shape)
+# B = np.array([[5,6], [7,8]])
+# print(B.shape)
+# print(np.dot(A,B)) ## np.dot() 함수 : 행렬의 곱을 계산하는 함수
+
+
+# x = np.array([1,2])
+# print(x.shape)
+# w = np.array([[1,3,5], [2,4,6]])
+# print(w)
+# print(w.shape)
+# y = np.dot(x,w)
+# print(y)
+
+# A = np.array([[1,2,3], [4,5,6]])
+# print(A.shape)
+# B = np.array([[1,2], [3,4], [5,6]])
+# print(B.shape)
+# print(np.dot(A,B))
+
+# C = np.array([[1,2], [3,4]])
+# print(C.shape)
+# print(A.shape)
+# print(np.dot(A,C)) ## 행렬의 곱에서는 형상에 주의해야 한다
+
+# A = np.array([[1,2], [3,4], [5,6]])
+# print(A.shape)
+# B = np.array([7,8])
+# print(B.shape)
+# print(np.dot(A,B)) ## 1차원 배열을 2차원 배열로 변환하여 계산한다
+
+## 신경망에서의 행렬 곱
+
+x = np.array([1,2])
+print(x.shape)
+w = np.array([[1,3,5], [2,4,6]])
+print(w)
+print(w.shape)
+y = np.dot(x,w)
+print(y)
