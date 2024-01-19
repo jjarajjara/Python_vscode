@@ -203,10 +203,80 @@ import matplotlib.pylab as plt
 
 ## 신경망에서의 행렬 곱
 
-x = np.array([1,2])
+# x = np.array([1,2])
+# print(x.shape)
+# w = np.array([[1,3,5], [2,4,6]])
+# print(w)
+# print(w.shape)
+# y = np.dot(x,w)
+# print(y)
+
+## 3층 신경망 구현하기
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.array([1.0, 0.5])
+w1 = np.array([[0.1,0.3,0.5], [0.2,0.4,0.6]])
+b1 = np.array([0.1,0.2,0.3])
+
+print(w1.shape)
 print(x.shape)
-w = np.array([[1,3,5], [2,4,6]])
-print(w)
-print(w.shape)
-y = np.dot(x,w)
+print(b1.shape)
+
+a1 = np.dot(x,w1) + b1
+
+Z1 = sigmoid(a1)
+print(Z1)
+print(a1)
+
+W2 = np.array([[0.1,0.4], [0.2,0.5], [0.3,0.6]])
+b2 = np.array([0.1,0.2])
+
+print(Z1.shape)
+print(W2.shape)
+print(b2.shape)
+
+a2 = np.dot(Z1,W2) + b2
+Z2 = sigmoid(a2)
+
+def identity_function(x):
+    return x
+
+W3 = np.array([[0.1,0.3], [0.2,0.4]])
+b3 = np.array([0.1,0.2])
+
+a3 = np.dot(Z2,W3) + b3
+Y = identity_function(a3)
+
+
+## 구현 정리
+
+def init_network():
+    network = {}
+    network['W1'] = np.array([[0.1,0.3,0.5], [0.2,0.4,0.6]])
+    network['b1'] = np.array([0.1,0.2,0.3])
+    network['W2'] = np.array([[0.1,0.4], [0.2,0.5], [0.3,0.6]])
+    network['b2'] = np.array([0.1,0.2])
+    network['W3'] = np.array([[0.1,0.3], [0.2,0.4]])
+    network['b3'] = np.array([0.1,0.2])
+
+    return network
+
+def forward(network, x):
+    W1, W2, W3 = network['W1'],network['W2'],network['W3']
+    b1, b2, b3 = network['b1'],network['b2'],network['b3']
+
+    a1 = np.dot(x,W1) + b1
+    Z1 = sigmoid(a1)
+    a2 = np.dot(Z1,W2) + b2
+    Z2 = sigmoid(a2)
+    a3 = np.dot(Z2,W3) + b3
+    Y = identity_function(a3)
+
+    return Y
+
+network = init_network()
+x = np.array([1.0,0.5])
+y = forward(network, x)
 print(y)
