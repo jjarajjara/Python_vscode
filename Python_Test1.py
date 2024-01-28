@@ -401,38 +401,40 @@
 ## 원-핫 인코딩이란 정답을 뜻하는 원소만 1이고 나머지는 0인 배열이다
 ## one_hot_label이 false면 '7'이나 '2'와 같은 레이블을 숫자 그대로 저장한다
 
+
+# # def img_show(img):
+# #     pil_img = Image.fromarray(np.uint8(img)) ## numpy로 저장된 이미지 데이터를 PIL용 데이터 객체로 변환
+# #     pil_img.show()
+
+# # (x_train, t_train), (x_test, t_test) = \
+# #     load_mnist(flatten=True, normalize=False)
+
+# # img = x_train[0]
+# # label = t_train[0]
+# # print(label) # 5
+
+# # print(img.shape) # (784,)
+# # img = img.reshape(28,28) # 원래 이미지의 모양으로 변형
+# # print(img.shape) # (28,28)
+
+# # img_show(img)
+
+# ## MNIST 데이터셋을 이용한 신경망의 추론 처리
+
+# ## 신경망의 추론 처리 구성 
+# ## 1. 입력층 뉴런 : 784개(이미지 크기 : 28 x 28)
+# ## 2. 출력층 뉴런 : 10개(0~9까지의 숫자를 구분)
+
+# ## 입력층 뉴런 784개 -> 은닉층 뉴런 50개 -> 은닉층 뉴런 100개 -> 출력층 뉴런 10개
+
 import sys, os
 sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
 import numpy as np
 from dataset.mnist import load_mnist
-# from PIL import Image
+from PIL import Image
 import pickle
 from common.functions import sigmoid, softmax
 
-# def img_show(img):
-#     pil_img = Image.fromarray(np.uint8(img)) ## numpy로 저장된 이미지 데이터를 PIL용 데이터 객체로 변환
-#     pil_img.show()
-
-# (x_train, t_train), (x_test, t_test) = \
-#     load_mnist(flatten=True, normalize=False)
-
-# img = x_train[0]
-# label = t_train[0]
-# print(label) # 5
-
-# print(img.shape) # (784,)
-# img = img.reshape(28,28) # 원래 이미지의 모양으로 변형
-# print(img.shape) # (28,28)
-
-# img_show(img)
-
-## MNIST 데이터셋을 이용한 신경망의 추론 처리
-
-## 신경망의 추론 처리 구성 
-## 1. 입력층 뉴런 : 784개(이미지 크기 : 28 x 28)
-## 2. 출력층 뉴런 : 10개(0~9까지의 숫자를 구분)
-
-## 입력층 뉴런 784개 -> 은닉층 뉴런 50개 -> 은닉층 뉴런 100개 -> 출력층 뉴런 10개
 
 def get_data():
     (x_train, t_train), (x_test, t_test) = \
@@ -442,9 +444,9 @@ def get_data():
 
 def init_network():
     with open("sample_weight.pkl", 'rb') as f: ## 가중치와 편향 매개변수를 sample_weight.pkl에 저장
-        network = pickle.load(f)
-
-    return network
+        network = pickle.load(f) ## pickle.load() 함수로 파일에서 데이터를 읽는다
+    ## f란? : sample_weight.pkl 파일을 열어서 f에 저장한다
+    return network 
 
 def predict(network, x): ## 입력 x가 주어졌을 때의 출력 y를 구하는 처리 과정
     W1, W2, W3 = network['W1'],network['W2'],network['W3']
@@ -459,6 +461,8 @@ def predict(network, x): ## 입력 x가 주어졌을 때의 출력 y를 구하�
 
     return y
 
+## 정확도 평가  
+
 x, t = get_data()
 network = init_network()
 
@@ -472,4 +476,18 @@ for i in range(len(x)): ## len(x) : 10,000
 
 print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
 
+## 정규화 (normalization) : 데이터를 특정 범위로 변환하는 처리
+## 전처리(pre-processing) : 신경망의 입력 데이터에 특정 변환을 가하는 것
+## 백색화 (whitening) : 데이터를 균일하게 분포시키는 처리
+
+## 배치처리 
+
+x, _ = get_data()
+network = init_network()
+W1, W2, W3 = network['W1'],network['W2'],network['W3']
+print(x.shape) ## (10000, 784)
+print(x[0].shape) ## (784,)
+print(W1.shape) ## (784, 50)
+print(W2.shape) ## (50, 100)
+print(W3.shape) ## (100, 10)
 
