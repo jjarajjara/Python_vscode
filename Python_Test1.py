@@ -1,8 +1,3 @@
-import numpy as np
-import matplotlib.pylab as plt
-
-
-
 ## NAND , OR 게이트 구현
 # def AND(x1, x2):
 #     x = np.array([x1,x2]) # 입력
@@ -376,16 +371,105 @@ import matplotlib.pylab as plt
 ## 신경망에서는 학습 때는 Softmax 함수를 사용하고, 
 ## 추론 때는 Softmax 함수를 생략하는 것이 일반적이다
 
+# import sys, os
+# sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+# from dataset.mnist import load_mnist
+# from PIL import Image
+
+# (x_train, t_train), (x_test, t_test) = \
+#     load_mnist(flatten=True, normalize=False)
+
+# ## 각 데이터의 형상 출력
+# print(x_train.shape) 
+# print(t_train.shape)
+# print(x_test.shape)
+# print(t_test.shape)
+
+## load_mnist() 함수는 읽은 MNIST 데이터를 
+## (훈련 이미지, 훈련 레이블), (시험 이미지, 시험 레이블) 형식으로 반환한다
+
+## 인수로는 normalize, flatten, one_hot_label 세 가지를 설정 가능 
+
+## normalize : 입력 이미지의 픽셀 값을 0.0 ~ 1.0 사이의 값으로 정규화할지 정한다
+## false로 설정시 입력 이미지의 픽셀은 원래 값 그대로 0 ~ 255 사이의 값을 유지한다
+
+## flatten : 입력 이미지를 평탄하게, 즉 1차원 배열로 만들지를 정한다
+## false로 설정시 입력 이미지를 1 x 28 x 28의 3차원 배열로,
+## true로 설정시 784개의 원소로 이루어진 1차원 배열로 저장한다
+
+## one_hot_label : 원-핫 인코딩 형태로 저장할지 정한다
+## 원-핫 인코딩이란 정답을 뜻하는 원소만 1이고 나머지는 0인 배열이다
+## one_hot_label이 false면 '7'이나 '2'와 같은 레이블을 숫자 그대로 저장한다
+
 import sys, os
 sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+import numpy as np
 from dataset.mnist import load_mnist
-from PIL import Image
+# from PIL import Image
+import pickle
+from common.functions import sigmoid, softmax
 
-(x_train, t_train), (x_test, t_test) = \
-    load_mnist(flatten=True, normalize=False)
+# def img_show(img):
+#     pil_img = Image.fromarray(np.uint8(img)) ## numpy로 저장된 이미지 데이터를 PIL용 데이터 객체로 변환
+#     pil_img.show()
 
-## 각 데이터의 형상 출력
-print(x_train.shape) 
-print(t_train.shape)
-print(x_test.shape)
-print(t_test.shape)
+# (x_train, t_train), (x_test, t_test) = \
+#     load_mnist(flatten=True, normalize=False)
+
+# img = x_train[0]
+# label = t_train[0]
+# print(label) # 5
+
+# print(img.shape) # (784,)
+# img = img.reshape(28,28) # 원래 이미지의 모양으로 변형
+# print(img.shape) # (28,28)
+
+# img_show(img)
+
+## MNIST 데이터셋을 이용한 신경망의 추론 처리
+
+## 신경망의 추론 처리 구성 
+## 1. 입력층 뉴런 : 784개(이미지 크기 : 28 x 28)
+## 2. 출력층 뉴런 : 10개(0~9까지의 숫자를 구분)
+
+## 입력층 뉴런 784개 -> 은닉층 뉴런 50개 -> 은닉층 뉴런 100개 -> 출력층 뉴런 10개
+
+def get_data():
+    (x_train, t_train), (x_test, t_test) = \
+        load_mnist(flatten=True, normalize=False, one_hot_label=False)
+
+    return x_test, t_test
+
+def init_network():
+    with open("sample_weight.pkl", 'rb') as f: ## 가중치와 편향 매개변수를 sample_weight.pkl에 저장
+        network = pickle.load(f)
+
+    return network
+
+def predict(network, x): ## 입력 x가 주어졌을 때의 출력 y를 구하는 처리 과정
+    W1, W2, W3 = network['W1'],network['W2'],network['W3']
+    b1, b2, b3 = network['b1'],network['b2'],network['b3']
+
+    a1 = np.dot(x,W1) + b1
+    Z1 = sigmoid(a1)
+    a2 = np.dot(Z1,W2) + b2
+    Z2 = sigmoid(a2)
+    a3 = np.dot(Z2,W3) + b3
+    y = softmax(a3)
+
+    return y
+
+x, t = get_data()
+network = init_network()
+
+accuracy_cnt = 0
+for i in range(len(x)): ## len(x) : 10,000
+    y = predict(network, x[i])
+    p = np.argmax(y) ## 확률이 가장 높은 원소의 인덱스를 얻는다
+    if p == t[i]:
+        accuracy_cnt += 1
+
+
+print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
+
+
