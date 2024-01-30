@@ -38,6 +38,8 @@ def softmax(x):
     x = x - np.max(x) # 오버플로 대책
     return np.exp(x) / np.sum(np.exp(x))
 
+def sum_squares_error(y, t):
+    return 0.5 * np.sum((y-t)**2)
 
 def mean_squared_error(y, t):
     return 0.5 * np.sum((y-t)**2)

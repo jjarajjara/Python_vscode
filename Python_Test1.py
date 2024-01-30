@@ -430,51 +430,51 @@
 import sys, os
 sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
 import numpy as np
-from dataset.mnist import load_mnist
-from PIL import Image
-import pickle
-from common.functions import sigmoid, softmax
+# from dataset.mnist import load_mnist
+# from PIL import Image
+# import pickle
+# from common.functions import sigmoid, softmax
 
 
-def get_data():
-    (x_train, t_train), (x_test, t_test) = \
-        load_mnist(flatten=True, normalize=False, one_hot_label=False)
+# def get_data():
+#     (x_train, t_train), (x_test, t_test) = \
+#         load_mnist(flatten=True, normalize=False, one_hot_label=False)
 
-    return x_test, t_test
+#     return x_test, t_test
 
-def init_network():
-    with open("sample_weight.pkl", 'rb') as f: ## 가중치와 편향 매개변수를 sample_weight.pkl에 저장
-        network = pickle.load(f) ## pickle.load() 함수로 파일에서 데이터를 읽는다
-    ## f란? : sample_weight.pkl 파일을 열어서 f에 저장한다
-    return network 
+# def init_network():
+#     with open("sample_weight.pkl", 'rb') as f: ## 가중치와 편향 매개변수를 sample_weight.pkl에 저장
+#         network = pickle.load(f) ## pickle.load() 함수로 파일에서 데이터를 읽는다
+#     ## f란? : sample_weight.pkl 파일을 열어서 f에 저장한다
+#     return network 
 
-def predict(network, x): ## 입력 x가 주어졌을 때의 출력 y를 구하는 처리 과정
-    W1, W2, W3 = network['W1'],network['W2'],network['W3']
-    b1, b2, b3 = network['b1'],network['b2'],network['b3']
+# def predict(network, x): ## 입력 x가 주어졌을 때의 출력 y를 구하는 처리 과정
+#     W1, W2, W3 = network['W1'],network['W2'],network['W3']
+#     b1, b2, b3 = network['b1'],network['b2'],network['b3']
 
-    a1 = np.dot(x,W1) + b1
-    Z1 = sigmoid(a1)
-    a2 = np.dot(Z1,W2) + b2
-    Z2 = sigmoid(a2)
-    a3 = np.dot(Z2,W3) + b3
-    y = softmax(a3)
+#     a1 = np.dot(x,W1) + b1
+#     Z1 = sigmoid(a1)
+#     a2 = np.dot(Z1,W2) + b2
+#     Z2 = sigmoid(a2)
+#     a3 = np.dot(Z2,W3) + b3
+#     y = softmax(a3)
 
-    return y
+#     return y
 
 ## 정확도 평가  
 
-x, t = get_data()
-network = init_network()
+# x, t = get_data()
+# network = init_network()
 
-accuracy_cnt = 0
-for i in range(len(x)): ## len(x) : 10,000
-    y = predict(network, x[i])
-    p = np.argmax(y) ## 확률이 가장 높은 원소의 인덱스를 얻는다
-    if p == t[i]:
-        accuracy_cnt += 1
+# accuracy_cnt = 0
+# for i in range(len(x)): ## len(x) : 10,000
+#     y = predict(network, x[i])
+#     p = np.argmax(y) ## 확률이 가장 높은 원소의 인덱스를 얻는다
+#     if p == t[i]:
+#         accuracy_cnt += 1
 
 
-print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
+# print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
 
 ## 정규화 (normalization) : 데이터를 특정 범위로 변환하는 처리
 ## 전처리(pre-processing) : 신경망의 입력 데이터에 특정 변환을 가하는 것
@@ -482,12 +482,96 @@ print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
 
 ## 배치처리 
 
-x, _ = get_data()
-network = init_network()
-W1, W2, W3 = network['W1'],network['W2'],network['W3']
-print(x.shape) ## (10000, 784)
-print(x[0].shape) ## (784,)
-print(W1.shape) ## (784, 50)
-print(W2.shape) ## (50, 100)
-print(W3.shape) ## (100, 10)
+# x, _ = get_data()
+# network = init_network()
+# W1, W2, W3 = network['W1'],network['W2'],network['W3']
+# print(x.shape) ## (10000, 784)
+# print(x[0].shape) ## (784,)
+# print(W1.shape) ## (784, 50)
+# print(W2.shape) ## (50, 100)
+# print(W3.shape) ## (100, 10)
+
+## 배치 (batch ) : 하나로 묶은 입력 데이터
+## 배치 처리의 이점 
+## 1. 수치 계산 라이브러리들이 큰 배열을 효율적으로 처리할 수 있도록 최적화되어 있다
+## 2. 커다란 신경망에서는 데이터 전송이 병목으로 작용하는 경우가 자주 있는데,
+## 큰 배열을 한꺼번에 계산하는 것이 데이터 전송을 효율적으로 해준다
+
+
+## 배치 처리 구현
+# x, t = get_data()
+# network = init_network()
+
+# batch_size = 100 ## 배치 크기
+# accuracy_cnt = 0
+
+# for i in range(0, len(x), batch_size): ## range(시작 인덱스, 끝 인덱스, 스텝)
+#     x_batch = x[i:i+batch_size] ## x[0:100], x[100:200], x[200:300] ... 
+#     y_batch = predict(network, x_batch)
+#     p = np.argmax(y_batch, axis=1) ## axis=1 : 1번째 차원을 구성하는 각 원소에서 최댓값을 찾도록 지정
+#     accuracy_cnt += np.sum(p == t[i:i+batch_size])
+
+# print("Accuracy:" + str(float(accuracy_cnt) / len(x)))    
+
+## range() 함수 : range(start, end) -> start부터 end-1까지의 숫자를 포함하는 range 객체를 반환한다
+## range() 함수 : range(start, end, step) 
+## -> start부터 end-1까지의 숫자를 step 간격으로 포함하는 range 객체를 반환한다
+
+## x[i.i+batch_size] : 입력 데이터의 i번째 데이터부터 i+batch_size-1번째 데이터까지 묶는다
+
+## argmax() 함수 : 최댓값의 인덱스를 가져온다
+## axis : 최댓값을 구하는 축을 지정한다
+
+
+## CHAPTER 4 신경망 학습
+
+## 기계학습 : 데이터를 사용해 문제를 해결하는 것
+## 훈련 데이터(training data) 와 시험 데이터(test data)로 나누어 학습과 실험을 수행한다
+
+## 범용 능력을 제대로 평가하기 위해 훈련 데이터와 시험 데이터를 분리
+
+## 손실 함수(loss function) : 신경망 성능의 '나쁨'을 나타내는 지표
+## 손실 함수의 결과값을 가장 작게 만드는 매개변수 값을 찾는 것이 목표
+
+## 오차제곱합(sum of squares for error, SSE) : 가장 많이 쓰이는 손실 함수
+
+## E = 1/2 sigma(k=1~n) (yk - tk)^2
+## yk : 신경망의 출력(신경망이 추정한 값)
+## tk : 정답 레이블
+## k : 데이터의 차원 수
+
+## 오차제곱합 구현  
+
+def sum_squares_error(y, t):
+    return 0.5 * np.sum((y-t)**2)
+
+t = [0,0,1,0,0,0,0,0,0,0] ## 정답은 '2'
+
+y = [0.1,0.05,0.6,0.0,0.05,0.1,0.0,0.1,0.0,0.0] ## '2'일 확률이 가장 높다고 추정함
+
+print(sum_squares_error(np.array(y), np.array(t))) ## 0.09750000000000003
+
+y = [0.1,0.05,0.1,0.0,0.05,0.1,0.0,0.6,0.0,0.0] ## '7'일 확률이 가장 높다고 추정함
+
+print(sum_squares_error(np.array(y), np.array(t))) ## 0.5975
+
+## 교차 엔트로피 오차(cross entropy error, CEE)
+
+## E = - sigma(k=1~n) tk*logyk
+## log : 밑이 e인 자연로그
+## yk : 신경망의 출력
+## tk : 정답 레이블(원-핫 인코딩)
+
+## 엔트로피 오차 구현 
+
+def cross_entropy_error(y, t):
+    delta = 1e-7
+    return -np.sum(t * np.log(y + delta)) ## delta : 아주 작은 값(0.0000001) -> np.log() 함수에 0을 입력하면 마이너스 무한대를 뜻하는 -inf가 되어 더 이상 계산을 진행할 수 없다
+
+t = [0,0,1,0,0,0,0,0,0,0] ## 정답은 '2'
+y = [0.1,0.05,0.6,0.0,0.05,0.1,0.0,0.1,0.0,0.0] ## '2'일 확률이 가장 높다고 추정함
+print(cross_entropy_error(np.array(y), np.array(t))) ## 0.510825457099338
+
+y = [0.1,0.05,0.1,0.0,0.05,0.1,0.0,0.6,0.0,0.0] ## '7'일 확률이 가장 높다고 추정함
+print(cross_entropy_error(np.array(y), np.array(t))) ## 2.302584092994546
 
