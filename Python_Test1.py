@@ -1,4 +1,5 @@
 ## NAND , OR 게이트 구현
+
 # def AND(x1, x2):
 #     x = np.array([x1,x2]) # 입력
 #     w = np.array([0.5, 0.5]) # 가중치
@@ -427,9 +428,7 @@
 
 # ## 입력층 뉴런 784개 -> 은닉층 뉴런 50개 -> 은닉층 뉴런 100개 -> 출력층 뉴런 10개
 
-import sys, os
-sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
-import numpy as np
+
 # from dataset.mnist import load_mnist
 # from PIL import Image
 # import pickle
@@ -634,35 +633,91 @@ import numpy as np
 # print(numerical_diff(function_1, 5)) ## 0.1999999999990898
 # print(numerical_diff(function_1, 10)) ## 0.2999999999986347
 
+# import numpy as np
+# import matplotlib.pylab as plt
+
+# ## 편미분 
+# def function_2(x):
+#     return x[0]**2 + x[1]**2 ## 또는 np.sum(x**2)
+
+# import sys, os
+# sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+# import numpy as np
+
+# # ## 기울기 
+# def numerical_gradient(f, x):
+#     h = 1e-4
+#     grad = np.zeros_like(x) ## x와 형상이 같은 배열을 생성
+
+#     for idx in range(x.size):
+#         tmp_val = x[idx]
+#         ## f(x+h) 계산
+#         x[idx] = tmp_val + h
+#         fxh1 = f(x)
+
+#         ## f(x-h) 계산
+#         x[idx] = tmp_val - h
+#         fxh2 = f(x)
+
+#         grad[idx] = (fxh1-fxh2) / (2*h)
+#         x[idx] = tmp_val
+
+#     return grad
+
+# # print(numerical_gradient(function_2, np.array([3.0,4.0]))) ## [6. 8.]
+# # print(numerical_gradient(function_2, np.array([0.0,2.0]))) ## [0. 4.]
+# # print(numerical_gradient(function_2, np.array([3.0,0.0]))) ## [6. 0.]
+
+
+# ## 경사법 (gradient method) : 기울기를 잘 이용해 함수의 최솟값을 찾으려는 것
+# ## 경사 하강법 (gradient descent method) : 최솟값 찾는 방법 ( 자주 쓰임 )
+# ## 경사 상승법 (gradient ascent method) : 최댓값 찾는 방법
+
+# def function_2(x):
+#     return x[0]**2 + x[1]**2
+
+# def gradient_descent(f, init_x, lr=0.01, step_num=100):
+#     x = init_x
+
+#     for i in range(step_num):
+#         grad = numerical_gradient(f,x)
+#         x -= lr * grad
+
+#     return x
+
+# init_x = np.array([-3.0,4.0]) ## 초기값 설정
+
+# init_x = np.array([-3.0,4.0]) ## 초기값 설정
+
+# print(gradient_descent(function_2, init_x=init_x, lr=1e-10, step_num=100)) ## 학습률이 너무 작은 예 : 거의 갱신되지 않은 채 끝남
+# print(gradient_descent(function_2, init_x=init_x, lr=1e-5, step_num=100)) ## 학습률이 너무 작은 예 : 거의 갱신되지 않은 채 끝남 
+
+
+# ## 하이퍼파라미터 (hyper parameter) : 학습률 같은 매개변수 
+
+
+## 신경망에서의 기울기 
+
+import sys, os
+sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
 import numpy as np
-import matplotlib.pylab as plt
+from common.functions import softmax, cross_entropy_error
+from common.gradient import numerical_gradient
 
-## 편미분 
-def function_2(x):
-    return x[0]**2 + x[1]**2 ## 또는 np.sum(x**2)
+class simpleNet:
+    def __init__(self):
+        self.W = np.random.randn(2,3) ## 정규분포로 초기화
 
-## 기울기 
-def numerical_gradient(f, x):
-    h = 1e-4
-    grad = np.zeros_like(x) ## x와 형상이 같은 배열을 생성
+    def predict(self, x):
+        return np.dot(x, self.W)
 
-    for idx in range(x.size):
-        tmp_val = x[idx]
-        ## f(x+h) 계산
-        x[idx] = tmp_val + h
-        fxh1 = f(x)
+    def loss(self, x, t):
+        z = self.predict(x) ## z = np.dot(x, self.W)
+        y = softmax(z)
+        loss = cross_entropy_error(y,t)
 
-        ## f(x-h) 계산
-        x[idx] = tmp_val - h
-        fxh2 = f(x)
-
-        grad[idx] = (fxh1-fxh2) / (2*h)
-        x[idx] = tmp_val
-
-    return grad
-
-print(numerical_gradient(function_2, np.array([3.0,4.0]))) ## [6. 8.]
-print(numerical_gradient(function_2, np.array([0.0,2.0]))) ## [0. 4.]
-print(numerical_gradient(function_2, np.array([3.0,0.0]))) ## [6. 0.]
-
+        return loss
+    
+net = simpleNet()
+print(net.W)
 
