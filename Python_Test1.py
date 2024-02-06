@@ -698,26 +698,178 @@
 
 ## 신경망에서의 기울기 
 
-import sys, os
-sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
-import numpy as np
-from common.functions import softmax, cross_entropy_error
-from common.gradient import numerical_gradient
+# import sys, os
+# sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+# import numpy as np
+# from common.functions import softmax, cross_entropy_error
+# from common.gradient import numerical_gradient
 
-class simpleNet:
-    def __init__(self):
-        self.W = np.random.randn(2,3) ## 정규분포로 초기화
+# class simpleNet:
+#     def __init__(self):
+#         self.W = np.random.randn(2,3) # 정규분포로 초기화
 
-    def predict(self, x):
-        return np.dot(x, self.W)
+#     def predict(self, x):
+#         return np.dot(x, self.W)
 
-    def loss(self, x, t):
-        z = self.predict(x) ## z = np.dot(x, self.W)
-        y = softmax(z)
-        loss = cross_entropy_error(y,t)
+#     def loss(self, x, t):
+#         z = self.predict(x)
+#         y = softmax(z)
+#         loss = cross_entropy_error(y, t)
 
-        return loss
+#         return loss
+
+# net = simpleNet()
+# print(net.W) ## 가중치 매개변수
+
+# x = np.array([0.6, 0.9]) ## 입력 데이터
+# p = net.predict(x)
+# print(p) ## 예측값
+# print(np.argmax(p)) ## 최댓값의 인덱스
+
+# t = np.array([0,0,1]) ## 정답 레이블
+# print(net.loss(x,t)) ## 손실 함수의 값
+
+
+## 학습 알고리즘 구현하기
+
+## 1단계 - 미니배치
+
+## 2단계 - 기울기 산출
+    ## 훈련 데이터 중 일부를 무작위로 가져온다
+    ## 선별한 데이터를 미니배치라 한다
+    ## 미니배치의 손실 함수 값을 줄이는 것이 목표
+
+## 3단계 - 매개변수 갱신
+    ## 미니배치의 손실 함수 값을 줄이기 위해 매개변수의 기울기를 구한다 
+    ## 기울기는 손실 함수의 값을 가장 작게 하는 방향을 제시한다
+
+## 4단계 - 1~3단계 반복
+    ## 가중치 매개변수 기울기 방향으로 아주 조금 갱신
+
+## 확률적 경사 하강법 (stochastic gradient descent, SGD)
+    ## 확률적으로 무작위로 골라낸 데이터에 대해 수행하는 경사 하강법
+
+## SGD : 대부분의 딥러닝 프레임워크가 확률적 경사 하강법을 구현한 함수를 제공한다
+
+
+## 2층 신경망 클래스 구현하기 
+# import sys, os
+# sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
+# import numpy as np
+# from common.functions import *
+# from common.gradient import numerical_gradient
+
+# class TwoLayerNet:
+#     def __init__(self, input_size, hidden_size, output_size, weight_init_std=0.01):
+#         ## 가중치 초기화
+#         self.params = {}
+#         self.params['W1'] = weight_init_std * np.random.randn(input_size, hidden_size)
+#         self.params['b1'] = np.zeros(hidden_size)
+#         self.params['W2'] = weight_init_std * np.random.randn(hidden_size, output_size)
+#         self.params['b2'] = np.zeros(output_size)
     
-net = simpleNet()
-print(net.W)
+#     def predict(self, x):
+#         W1, W2 = self.params['W1'], self.params['W2']
+#         b1, b2 = self.params['b1'], self.params['b2']
+
+#         a1 = np.dot(x,W1) + b1
+#         z1 = sigmoid(a1)
+#         a2 = np.dot(z1,W2) + b2
+#         y = softmax(a2)
+
+#         return y
+    
+#     ## x : 입력 데이터, t : 정답 레이블
+#     ## predict()의 결과와 정답 레이블을 바탕으로 교차 엔트로피 오차를 구한다
+#     def loss(self, x, t):
+#         y = self.predict(x)
+
+#         return cross_entropy_error(y, t)
+    
+#     def accuracy(self, x, t):
+#         y = self.predict(x)
+#         y = np.argmax(y, axis=1)
+#         t = np.argmax(t, axis=1)
+
+#         accuracy = np.sum(y==t) / float(x.shape[0])
+
+#         return accuracy
+    
+#     ## x : 입력 데이터, t : 정답 레이블
+#     ## 수치 미분 방식으로 매개변수의 손실 함수에 대한 기울기 계산 
+#     def numercial_gradient(self, x, t):
+#         loss_W = lambda W: self.loss(x, t)
+
+#         grads = {}
+#         grads['W1'] = numerical_gradient(loss_W, self.params['W1'])
+#         grads['b1'] = numerical_gradient(loss_W, self.params['b1'])
+#         grads['W2'] = numerical_gradient(loss_W, self.params['W2'])
+#         grads['b2'] = numerical_gradient(loss_W, self.params['b2'])
+
+#         return grads
+    
+## TwoLayerNet 클래스의 변수 
+    
+## params 변수 : 신경망의 매개변수를 보관하는 딕셔너리 변수
+    ## params['W1'] : 1번째 층의 가중치, params['b1'] : 1번째 층의 편향
+    ## params['W2'] : 2번째 층의 가중치, params['b2'] : 2번째 층의 편향
+
+## grads 변수 : 기울기를 보관하는 딕셔너리 변수(numerical_gradient() 메서드의 반환 값)
+    ## grads['W1'] : 1번째 층의 가중치의 기울기, grads['b1'] : 1번째 층의 편향의 기울기
+    ## grads['W2'] : 2번째 층의 가중치의 기울기, grads['b2'] : 2번째 층의 편향의 기울기
+
+## TwoLayerNet 클래스의 메서드
+
+## __init__(self, input_size, hidden_size, output_size) : 초기화를 수행한다
+    ## input_size : 입력층의 뉴런 수
+    ## hidden_size : 은닉층의 뉴런 수
+    ## output_size : 출력층의 뉴런 수
+
+## predict(self, x) : 예측(추론)을 수행한다
+
+## loss(self, x, t) : 손실 함수의 값을 구한다
+
+## accuracy(self, x, t) : 정확도를 구한다
+
+## numerical_gradient(self, x, t) : 가중치 매개변수의 기울기를 구한다
+
+## gradient(self, x, t) : 가중치 매개변수의 기울기를 구한다
+
+ 
+
+import numpy as np
+from dataset.mnist import load_mnist
+from two_layer_net import TwoLayerNet
+
+(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+
+train_loss_list = []
+
+## 하이퍼파라미터
+iters_num = 10000 ## 반복 횟수
+train_size = x_train.shape[0]
+batch_size = 100 ## 미니배치 크기
+learning_rate = 0.1
+
+network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+
+for i in range(iters_num):
+    ## 미니배치 획득
+    batch_mask = np.random.choice(train_size, batch_size)
+    x_batch = x_train[batch_mask]
+    t_batch = t_train[batch_mask]
+
+    ## 기울기 계산
+    grad = network.numerical_gradient(x_batch, t_batch)
+    ## grad = network.gradient(x_batch, t_batch) ## 성능 개선판
+
+    ## 매개변수 갱신
+    for key in ('W1', 'b1', 'W2', 'b2'):
+        network.params[key] -= learning_rate * grad[key]
+
+    ## 학습 경과 기록
+    loss = network.loss(x_batch, t_batch)
+    train_loss_list.append(loss)
+
+    print(loss)
 
