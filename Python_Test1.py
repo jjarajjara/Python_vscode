@@ -980,29 +980,60 @@
     
 ## 활성화 함수 계층 구현하기 
 
-import numpy as np
+# import numpy as np
 
-class Relu: 
-    def __init__(self):
-        self.mask = None
+# class Relu: 
+#     def __init__(self):
+#         self.mask = None
     
-    def forward(self, x):
-        self.mask = (x <= 0)
-        out = x.copy()
-        out[self.mask] = 0
+#     def forward(self, x):
+#         self.mask = (x <= 0)
+#         out = x.copy()
+#         out[self.mask] = 0
 
-        return out
+#         return out
 
-    def backword(self, dout):
-        dout[self.mask] = 0
-        dx = dout
+#     def backword(self, dout):
+#         dout[self.mask] = 0
+#         dx = dout
 
-        return dx   
+#         return dx   
     
-x = np.array([[1.0, -0.5], [-2.0, 3.0]])
-print(x)
+# x = np.array([[1.0, -0.5], [-2.0, 3.0]])
+# print(x)
 
-mask = (x <= 0)
-print(mask)
+# mask = (x <= 0)
+# print(mask)
 
+# class Sigmoid:
+#     def __init__(self):
+#         self.out = None
+
+#     def forward(self, x):
+#         out = 1 / (1 + np.exp(-x))
+#         self.out = out
+
+#         return out
+
+#     def backward(self, dout):
+#         dx = dout * (1.0 - self.out) * self.out
+
+#         return dx
+    
+
+## Affine/Softmax 계층 구현하기
+
+import numpy as np  
+
+X = np.random.rand(2) ## 입력
+W = np.random.rand(2,3) ## 가중치
+B = np.random.rand(3) ## 편향
+
+X.shape ## (2,)
+W.shape ## (2,3)
+B.shape ## (3,)
+
+Y = np.dot(X,W) + B 
+
+## 어파인 변환 (Affine transformation) : 신경망의 순전파 처리 과정을 수식으로 나타낸 것
 
