@@ -938,4 +938,71 @@
 
 ## 계산 그래프 (computational graph) : 계산 과정을 그래프로 나타낸 것
 
+## 노드(node) : 원(노드)로 표현
+## 에지(edge) : 노드 사이의 연결선을 의미
+
+## 단순한 계층 구현
+ 
+
+## 곱셈 계층    
+# class MulLayer:
+#     def __init__(self):
+#         self.x = None
+#         self.y = None
+
+#     def forward(self, x, y):
+#         self.x = x
+#         self.y = y
+#         out = x * y
+
+#         return out
+
+#     def backward(self, dout):
+#         dx = dout * self.y
+#         dy = dout * self.x
+
+#         return dx, dy
+    
+# ## 덧셈 계층 
+# class AddLayer:
+#     def __init__(self):
+#         pass
+
+#     def forward(self, x, y):
+#         out = x + y
+#         return out
+
+#     def backward(self, dout):
+#         dx = dout * 1
+#         dy = dout * 1
+
+#         return dx, dy
+    
+## 활성화 함수 계층 구현하기 
+
+import numpy as np
+
+class Relu: 
+    def __init__(self):
+        self.mask = None
+    
+    def forward(self, x):
+        self.mask = (x <= 0)
+        out = x.copy()
+        out[self.mask] = 0
+
+        return out
+
+    def backword(self, dout):
+        dout[self.mask] = 0
+        dx = dout
+
+        return dx   
+    
+x = np.array([[1.0, -0.5], [-2.0, 3.0]])
+print(x)
+
+mask = (x <= 0)
+print(mask)
+
 
