@@ -45,3 +45,121 @@ class SoftmaxWithLoss:
     
 
 
+class Relu:
+    def __init__(self):
+        self.mask = None
+
+    def forward(self, x):
+        self.mask = (x <= 0)
+        out = x.copy()
+        out[self.mask] = 0
+
+        return out
+
+    def backward(self, dout):
+        dout[self.mask] = 0
+        dx = dout
+
+        return dx  
+    
+class OrderedDict:
+    def __init__(self):
+        self.data = {}
+        
+    def __setitem__(self, key, value):
+        self.data[key] = value
+        
+    def __getitem__(self, key):
+        return self.data[key]
+    
+    def items(self):
+        return self.data.items()
+    
+    def values(self):
+        return self.data.values()
+    
+    def keys(self):
+        return self.data.keys()
+    
+    def popitem(self):
+        return self.data.popitem()
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __contains__(self, key):
+        return key in self.data
+    
+    def clear(self):
+        self.data.clear()
+    
+    def __repr__(self):
+        return repr(self.data)
+    
+    def __str__(self):
+        return str(self.data)
+    
+    def __iter__(self):
+        return iter(self.data)
+    
+    def __reversed__(self):
+        return reversed(self.data)
+    
+    def __eq__(self, value):
+        return self.data == value
+    
+    def __ne__(self, value):
+        return self.data != value
+    
+    def __lt__(self, value):
+        return self.data < value
+    
+    def __le__(self, value):
+        return self.data <= value
+    
+    def __gt__(self, value):
+        return self.data > value
+    
+    def __ge__(self, value):
+        return self.data >= value
+    
+    def __add__(self, value):
+        return self.data + value
+    
+    def __sub__(self, value):
+        return self.data - value
+    
+    def __mul__(self, value):
+        return self.data * value
+    
+    def __truediv__(self, value):
+        return self.data / value
+    
+    def __floordiv__(self, value):
+        return self.data // value
+    
+    def __mod__(self, value):
+        return self.data % value
+    
+    def __divmod__(self, value):
+        return divmod(self.data, value)
+    
+    def __pow__(self, value):
+        return self.data ** value
+    
+    def __lshift__(self, value):
+        return self.data << value
+    
+    def __rshift__(self, value):
+        return self.data >> value
+    
+    def __and__(self, value):
+        return self.data & value
+    
+    def __xor__(self, value):
+        return self.data ^ value
+    
+    def __or__(self, value):
+        return self.data | value
+    
+    

@@ -96,7 +96,15 @@ def cross_entropy_error(y, t):
 ## 정답에 해당하는 신경망의 출력만으로 교차 엔트로피 오차를 구할 수 있다 
 
 
-
 def softmax_loss(X, t):
     y = softmax(X)
     return cross_entropy_error(y, t)
+
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x
+    
+    for i in range(step_num):
+        grad = numerical_gradient(f, x) # 기울기 계산
+        x -= lr * grad # lr : 학습률
+        
+    return x
